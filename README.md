@@ -35,8 +35,10 @@ In `programs/pre-req-vault/src/instructions/withdraw.rs`, after the vault-to-use
 
 ## Architecture & video
 
+- Architecture diagram (PNG): [`docs/architecture-diagram.png`](docs/architecture-diagram.png)  
+- Video walkthrough: [Watch the Turbin3 vault demo](https://youtu.be/Q9T4i_pILys)  
 - Diagram (Mermaid + export instructions): [`docs/architecture.md`](docs/architecture.md)  
-- Raw Mermaid file: [`docs/architecture-diagram.mmd`](docs/architecture-diagram.mmd)  
+- Raw Mermaid source: [`docs/architecture-diagram.mmd`](docs/architecture-diagram.mmd)  
 - Video script: [`docs/VIDEO_SCRIPT.md`](docs/VIDEO_SCRIPT.md)  
 
 ## Local development
@@ -57,7 +59,7 @@ Never commit keypairs (`target/deploy/*-keypair.json`, `id.json`).
 
 Turbin3 Part 2 is **founder-authored** capstone pre-work. The portal checklist may not expose a separate upload field; this repo includes supplementary material for reviewers:
 
-- **[`docs/ABRAXAS_CAPSTONE.md`](docs/ABRAXAS_CAPSTONE.md)** — Abraxas (RWA category), concept notes, and sections marked for founder completion  
+- **[`docs/ABRAXAS_CAPSTONE.md`](docs/ABRAXAS_CAPSTONE.md)** — Abraxas capstone pre-work (RWA category; founder-authored concept, PMF, and founder–market fit)  
 - Policy reminder: [`docs/PART2_CAPSTONE.md`](docs/PART2_CAPSTONE.md)  
 
 Publishing here does **not** replace any official Turbin3 submission step. Capstone sections are founder-authored in [`docs/ABRAXAS_CAPSTONE.md`](docs/ABRAXAS_CAPSTONE.md).
