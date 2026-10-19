@@ -1,72 +1,86 @@
-# ~3 minute video script — Turbin3 Vault (recorded by you)
+# Video walkthrough script (≤3 minutes)
 
-**Requirements:** ≤3 minutes, YouTube, **public**, **captions** enabled.  
-**Use with:** [`architecture.md`](architecture.md) diagram on screen.
+**On screen:** `docs/architecture-diagram.png` — pan left to right with the four numbered columns.
 
----
-
-### [0:00–0:15] Introduction
-
-Hi — this is my Turbin3 Q4 vault prerequisite walkthrough. I deployed an Anchor vault on **Solana devnet** at program id **`DrkFYttwjh819w1t5jfKvv4AwE3aasNuikpGmsMjGbPP`**. The cohort extension is a **cross-program invocation** on **withdraw** that registers my GitHub handle with Turbin3’s registration program.
+**References (public only):** vault `DrkFYttwjh819w1t5jfKvv4AwE3aasNuikpGmsMjGbPP` · registration `TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM` · GitHub `worldlabsprotocol-ux` · withdraw tx `438pmVMP…1gyTby` (devnet).
 
 ---
 
-### [0:15–0:50] Diagram — user and PDAs
+## Color legend (point once at top of diagram)
 
-*(Point to user wallet on diagram.)*
-
-The **user wallet** signs every instruction.
-
-Two PDAs belong to **my vault program**:
-
-1. **Vault state** — seeds `"state"` plus my public key. It stores the bumps used to validate PDAs.
-2. **Vault** — seeds `"vault"` plus the vault state address. It holds SOL; the program signs outbound transfers with the stored vault bump.
-
----
-
-### [0:50–1:25] Initialize, deposit, close
-
-**Initialize** — I pay rent to create vault state and record bumps.
-
-**Deposit** — I sign a system transfer from my wallet into the vault PDA. Only I sign; incoming transfers don’t need the vault PDA to sign.
-
-**Close** — The vault PDA signs a transfer that drains remaining lamports to me, then vault state closes and rent returns.
-
-*(Optional: mention test txs `5cQad…` init, `5h5KX…` deposit, `2itXi…` close on devnet explorer.)*
+| Color | Meaning |
+|-------|---------|
+| Green | User wallet — signer on every instruction |
+| Blue boxes | Vault program (top) and System Program |
+| Purple | Registration program |
+| Orange cylinders | PDAs (on-chain accounts) |
+| White boxes in columns | Instructions / withdraw sub-steps |
 
 ---
 
-### [1:25–2:20] Withdraw and registration CPI
+### [0:00–0:15] Intro
 
-**Withdraw** runs in two steps:
+*(Pan the **four columns** ① → ④ left to right.)*
 
-1. **SOL out** — The vault PDA signs a system transfer from the vault back to me (`invoke_signed` with vault seeds).
-2. **Registration CPI** — My program calls Turbin3’s registration program on devnet (`TRBZyQHB…`). It passes the **prereqs** PDA for my wallet and invokes **`initialize`** with GitHub username **`worldlabsprotocol-ux`**.
-
-That CPI must come from **my deployed vault’s withdraw instruction**, not a direct client call to registration — that’s what cohort verification checks.
-
-*(Show explorer withdraw tx: `438pmVMP…` — inner instruction to registration program.)*
-
-Registration account: **`6cAp3qGX91HWE1LMyfmFP9KAU8J2eFCX6N9Cdp98dWv5`**.
+This diagram is my Turbin3 devnet vault: four instructions in order — initialize, deposit, withdraw, close — with a registration CPI only on withdraw.
 
 ---
 
-### [2:20–2:50] What we verified
+### [0:15–0:40] ① Initialize
 
-I ran TypeScript integration tests **once** on devnet with **`anchor test --skip-deploy --skip-build`** after deploying my program. **All four tests passed.** Registration happened only on the withdraw step; I will **not** re-run those tests on the same wallet because registration is one-time per wallet.
+*(Column **①**; point **VaultState** and **Vault** PDAs below.)*
 
----
-
-### [2:50–3:00] Closing
-
-That’s the design: per-user PDAs for custody, system program for SOL movement, and a registration CPI on withdraw. Thanks.
+I sign and pay rent. The program creates **VaultState** with seeds `state` plus my pubkey and stores the bumps. The **Vault** PDA is derived with `vault` plus vault state — it holds SOL but no custom data.
 
 ---
 
-## Recording checklist
+### [0:40–1:00] ② Deposit
 
-- [ ] Diagram visible (exported PNG from Mermaid)  
-- [ ] Speak clearly; phone is fine per cohort  
-- [ ] Upload to YouTube (unlisted or public — cohort must access)  
-- [ ] Enable captions (auto + quick review)  
-- [ ] Paste link into portal with GitHub repo and diagram  
+*(Column **②**; trace **deposit** → **System Program** → **Vault PDA**.)*
+
+I sign again. **Deposit** moves lamports from my wallet into the vault PDA through the System Program. Only I sign.
+
+---
+
+### [1:00–1:50] ③ Withdraw — A then B
+
+*(Column **③**; highlight **A** then **B**.)*
+
+**Withdraw** is two steps.
+
+**Step A:** The vault PDA signs an outbound transfer — `invoke_signed` — SOL back to me via the System Program.
+
+**Step B:** My vault program CPIs into Turbin3’s registration program and calls **`initialize`** with GitHub **`worldlabsprotocol-ux`**. That creates the **Prereqs PDA**. I’m still the signer on the outer transaction, so verification sees registration through **my vault’s withdraw**, not a direct client call.
+
+*(Optional: show devnet explorer for tx `438pmVMP…`.)*
+
+---
+
+### [1:50–2:15] ④ Close
+
+*(Column **④**.)*
+
+**Close:** The vault PDA signs draining any remaining lamports to me, then **VaultState** closes and rent returns to my wallet.
+
+---
+
+### [2:15–2:50] Verification
+
+*(Point at **Prereqs PDA** and column ③ again.)*
+
+I deployed program `DrkFYtt…` once and ran devnet tests once — four passing. Registration is on-chain for `worldlabsprotocol-ux`. I will not re-run withdraw on this wallet.
+
+---
+
+### [2:50–3:00] Outro
+
+That’s the left-to-right flow: PDAs for custody, System Program for SOL, registration CPI only on withdraw. Thanks.
+
+---
+
+## Record & upload
+
+1. Display **`architecture-diagram.png`**; zoom so column ③ A/B text is readable.  
+2. Move **left → right** through ①–④.  
+3. Record ≤3 min · YouTube (accessible) · **Captions on**.  
+4. Submit at [prereq.turbin3.org](https://prereq.turbin3.org/) with repo URL + diagram + video + Part 2 Doc.

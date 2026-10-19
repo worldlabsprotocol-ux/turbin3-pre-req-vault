@@ -10,59 +10,17 @@ Anchor program **`pre_req_vault`** on **Solana devnet**. Each user gets an isola
 
 Standalone source: [`architecture-diagram.mmd`](architecture-diagram.mmd)
 
+**Submission exports (local, review before push):**
+
+- PNG: [`architecture-diagram.png`](architecture-diagram.png)  
+- SVG: [`architecture-diagram.svg`](architecture-diagram.svg)
+
 ---
 
 ## System diagram
 
-```mermaid
-flowchart TB
-  subgraph UserLayer["User"]
-    UW["User wallet\nSigner on every instruction"]
-  end
-
-  subgraph VaultProg["Vault program — DrkFYttwjh819w1t5jfKvv4AwE3aasNuikpGmsMjGbPP"]
-    direction TB
-    INIT["initialize"]
-    DEP["deposit(amount)"]
-    WD["withdraw(amount)"]
-    CLS["close"]
-  end
-
-  subgraph VaultPDAs["Vault PDAs (vault program owner)"]
-    VS["VaultState\nseeds: state + user\nstores state_bump, vault_bump"]
-    VAULT["Vault SOL account\nseeds: vault + vault_state\nPDA signs outbound transfers"]
-  end
-
-  subgraph RegProg["Registration program — TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM"]
-    REG_INIT["initialize(github)"]
-    REG_PDA["Prereqs PDA\nseeds: prereqs + user\nstores ApplicationAccount"]
-  end
-
-  SYS["System Program"]
-
-  UW -->|"sign, pay rent"| INIT
-  INIT --> VS
-  INIT --> VAULT
-
-  UW -->|"sign, transfer SOL in"| DEP
-  DEP -->|"invoke transfer"| SYS
-  SYS --> VAULT
-
-  UW -->|"sign"| WD
-  WD -->|"invoke_signed transfer"| SYS
-  VAULT -->|"SOL out"| UW
-  WD -->|"CPI"| REG_INIT
-  REG_INIT --> REG_PDA
-  UW -->|"signer in CPI"| REG_INIT
-
-  UW -->|"sign"| CLS
-  CLS -->|"invoke_signed drain"| SYS
-  VAULT --> UW
-  CLS -->|"close account, rent"| VS
-
-  SYS --- INIT
-  SYS --- REG_INIT
-```
+**Submission export:** use [`architecture-diagram.png`](architecture-diagram.png) or [`.svg`](architecture-diagram.svg).  
+**Editable source:** [`architecture-diagram.mmd`](architecture-diagram.mmd) — left-to-right pipeline ① Initialize → ② Deposit → ③ Withdraw (A then B) → ④ Close, with a dedicated PDA row and program legend.
 
 ---
 

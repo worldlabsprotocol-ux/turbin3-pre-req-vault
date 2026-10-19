@@ -1,47 +1,78 @@
+%% Turbin3 Q4 vault — clean LR pipeline + account row (logic unchanged)
+%% Verified: programs/pre-req-vault/src/instructions/*.rs
 flowchart TB
-  subgraph UserLayer["User"]
-    UW["User wallet\nSigner on every instruction"]
+  classDef user fill:#e8f5e9,stroke:#1b5e20,stroke-width:3px,color:#1b3d1f
+  classDef step fill:#ffffff,stroke:#3949ab,stroke-width:2px,color:#1a237e
+  classDef pda fill:#fff8e1,stroke:#ef6c00,stroke-width:3px,color:#4e342e
+  classDef prog fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px,color:#0d2137
+  classDef reg fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#311b48
+  classDef sys fill:#eceff1,stroke:#455a64,stroke-width:2px,color:#263238
+
+  LEG["Programs: Vault DrkFYtt…GbPP · Registration TRBZyQHB…ZaKWDM · System Program"]:::prog
+
+  UW(["User wallet — signer on every instruction"]):::user
+
+  subgraph PIPE["Instruction flow  →  Initialize · Deposit · Withdraw · Close"]
+    direction LR
+
+    subgraph COL1["① Initialize"]
+      direction TB
+      I1["initialize"]:::step
+      T1["Init VaultState · derive Vault bumps\nvia System Program"]:::step
+      I1 --> T1
+    end
+
+    subgraph COL2["② Deposit"]
+      direction TB
+      I2["deposit"]:::step
+      T2["User-signed SOL transfer\ninto Vault PDA"]:::step
+      I2 --> T2
+    end
+
+    subgraph COL3["③ Withdraw"]
+      direction TB
+      I3["withdraw"]:::step
+      A3["A · Vault PDA signs\nSOL transfer to user"]:::step
+      B3["B · CPI to registration\ninitialize worldlabsprotocol-ux"]:::step
+      I3 --> A3 --> B3
+    end
+
+    subgraph COL4["④ Close"]
+      direction TB
+      I4["close"]:::step
+      T4["Vault PDA signs drain\nClose VaultState · rent to user"]:::step
+      I4 --> T4
+    end
+
+    COL1 --- COL2 --- COL3 --- COL4
   end
 
-  subgraph VaultProg["Vault program — DrkFYttwjh819w1t5jfKvv4AwE3aasNuikpGmsMjGbPP"]
-    direction TB
-    INIT["initialize"]
-    DEP["deposit(amount)"]
-    WD["withdraw(amount)"]
-    CLS["close"]
+  subgraph ACCTS["On-chain PDAs"]
+    direction LR
+    VS[("VaultState\nseeds: state + user")]:::pda
+    VAULT[("Vault\nseeds: vault + vault_state\nholds SOL")]:::pda
+    REGP[("Prereqs\nseeds: prereqs + user")]:::pda
   end
 
-  subgraph VaultPDAs["Vault PDAs (vault program owner)"]
-    VS["VaultState\nseeds: state + user\nstores state_bump, vault_bump"]
-    VAULT["Vault SOL account\nseeds: vault + vault_state\nPDA signs outbound transfers"]
-  end
+  REGN[["Registration program"]]:::reg
+  SYST[["System Program"]]:::sys
 
-  subgraph RegProg["Registration program — TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM"]
-    REG_INIT["initialize(github)"]
-    REG_PDA["Prereqs PDA\nseeds: prereqs + user\nstores ApplicationAccount"]
-  end
+  UW --> I1
+  UW --> I2
+  UW --> I3
+  UW --> I4
 
-  SYS["System Program"]
+  T1 --> VS
+  T1 --> VAULT
+  T2 --> VAULT
+  A3 --> VAULT
+  B3 --> REGP
+  B3 --> REGN
+  T4 --> VAULT
+  T4 --> VS
 
-  UW -->|"sign, pay rent"| INIT
-  INIT --> VS
-  INIT --> VAULT
-
-  UW -->|"sign, transfer SOL in"| DEP
-  DEP -->|"invoke transfer"| SYS
-  SYS --> VAULT
-
-  UW -->|"sign"| WD
-  WD -->|"invoke_signed transfer"| SYS
-  VAULT -->|"SOL out"| UW
-  WD -->|"CPI"| REG_INIT
-  REG_INIT --> REG_PDA
-  UW -->|"signer in CPI"| REG_INIT
-
-  UW -->|"sign"| CLS
-  CLS -->|"invoke_signed drain"| SYS
-  VAULT --> UW
-  CLS -->|"close account, rent"| VS
-
-  SYS --- INIT
-  SYS --- REG_INIT
+  T1 -.-> SYST
+  T2 -.-> SYST
+  A3 -.-> SYST
+  T4 -.-> SYST
+  B3 -.-> SYST
