@@ -50,9 +50,9 @@ The cohort site uses a **local device checklist** (not a separate public API). W
 1. **GitHub repository URL** — public repo with your modified vault (CPI in `withdraw`)  
 2. **Architecture diagram** — file upload or link (PNG/PDF from Mermaid export)  
 3. **Video URL** — YouTube, ≤3 minutes, accessible, captions enabled  
-4. **Part 2 Google Doc link** — capstone pre-work  
+4. **Part 2 capstone pre-work** — cohort Google Doc if requested; supplementary: [`ABRAXAS_CAPSTONE.md`](ABRAXAS_CAPSTONE.md) in this repo (founder must complete marked sections)  
 
-Confirm any additional form fields on [prereq.turbin3.org](https://prereq.turbin3.org/) at submit time.
+Confirm any additional form fields on [prereq.turbin3.org](https://prereq.turbin3.org/) at submit time. **Repo capstone ≠ automatic Part 2 receipt by Turbin3.**
 
 ---
 

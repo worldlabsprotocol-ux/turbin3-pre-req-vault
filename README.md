@@ -2,7 +2,7 @@
 
 Modified Anchor vault for the [Turbin3 Builders Cohort prerequisites](https://prereq.turbin3.org/): **withdraw** performs a CPI to the cohort **registration** program and records a GitHub username.
 
-**Independent coursework — not affiliated with Abraxas.**
+Solana vault prerequisite codebase only (not Abraxas product code).
 
 ## Deployed program (Solana devnet)
 
@@ -53,12 +53,20 @@ anchor build
 
 Never commit keypairs (`target/deploy/*-keypair.json`, `id.json`).
 
+## Capstone pre-work (Part 2 — supplementary)
+
+Turbin3 Part 2 is **founder-authored** capstone pre-work. The portal checklist may not expose a separate upload field; this repo includes supplementary material for reviewers:
+
+- **[`docs/ABRAXAS_CAPSTONE.md`](docs/ABRAXAS_CAPSTONE.md)** — Abraxas (RWA category), concept notes, and sections marked for founder completion  
+- Policy reminder: [`docs/PART2_CAPSTONE.md`](docs/PART2_CAPSTONE.md)  
+
+Publishing here does **not** replace any official Turbin3 submission step. Capstone sections are founder-authored in [`docs/ABRAXAS_CAPSTONE.md`](docs/ABRAXAS_CAPSTONE.md).
+
 ## Submission
 
 Full checklist and portal fields: [`docs/SUBMISSION.md`](docs/SUBMISSION.md)  
-Pre-push audit: [`docs/PUBLICATION_AUDIT.md`](docs/PUBLICATION_AUDIT.md)  
 
-**Deadline:** Wed **21 Oct 2026, 15:00 UTC** — submit Part 1 (this repo + diagram + video) **and** Part 2 capstone Google Doc together.
+**Deadline:** Wed **21 Oct 2026, 15:00 UTC** — Part 1: repo + diagram + video; Part 2: your capstone (Doc or supplementary markdown as cohort directs).
 
 ## Reference
 
