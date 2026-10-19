@@ -6,3 +6,10 @@ node_modules
 test-ledger
 .yarn
 .surfpool
+# Solana keypairs — never commit
+**/id.json
+**/*-keypair.json
+**/*-upgrade-buffer.json
+**/*.key
+.env
+.env.*

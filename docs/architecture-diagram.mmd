@@ -1,0 +1,47 @@
+flowchart TB
+  subgraph UserLayer["User"]
+    UW["User wallet\nSigner on every instruction"]
+  end
+
+  subgraph VaultProg["Vault program — DrkFYttwjh819w1t5jfKvv4AwE3aasNuikpGmsMjGbPP"]
+    direction TB
+    INIT["initialize"]
+    DEP["deposit(amount)"]
+    WD["withdraw(amount)"]
+    CLS["close"]
+  end
+
+  subgraph VaultPDAs["Vault PDAs (vault program owner)"]
+    VS["VaultState\nseeds: state + user\nstores state_bump, vault_bump"]
+    VAULT["Vault SOL account\nseeds: vault + vault_state\nPDA signs outbound transfers"]
+  end
+
+  subgraph RegProg["Registration program — TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM"]
+    REG_INIT["initialize(github)"]
+    REG_PDA["Prereqs PDA\nseeds: prereqs + user\nstores ApplicationAccount"]
+  end
+
+  SYS["System Program"]
+
+  UW -->|"sign, pay rent"| INIT
+  INIT --> VS
+  INIT --> VAULT
+
+  UW -->|"sign, transfer SOL in"| DEP
+  DEP -->|"invoke transfer"| SYS
+  SYS --> VAULT
+
+  UW -->|"sign"| WD
+  WD -->|"invoke_signed transfer"| SYS
+  VAULT -->|"SOL out"| UW
+  WD -->|"CPI"| REG_INIT
+  REG_INIT --> REG_PDA
+  UW -->|"signer in CPI"| REG_INIT
+
+  UW -->|"sign"| CLS
+  CLS -->|"invoke_signed drain"| SYS
+  VAULT --> UW
+  CLS -->|"close account, rent"| VS
+
+  SYS --- INIT
+  SYS --- REG_INIT
